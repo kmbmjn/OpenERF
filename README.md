@@ -26,36 +26,68 @@ OpenERF.save_ERF(model, model_name=model_name)
 All images below are ERF maps generated from the ImageNet validation subset in `./imagenet_val_1000`.
 The full set is available in [`./results/`](./results/).
 
-### CNN Families
-
-| ResNet-34 | ResNet-50 | ResNeXt-101 |
-| --- | --- | --- |
-| ![ERF ResNet-34](results/OpenERF_resnet34.a1_in1k.png) | ![ERF ResNet-50](results/OpenERF_resnet50.a1_in1k.png) | ![ERF ResNeXt-101](results/OpenERF_resnext101_32x8d.tv_in1k.png) |
-| `resnet34.a1_in1k` | `resnet50.a1_in1k` | `resnext101_32x8d.tv_in1k` |
-
-| DenseNet-201 | EfficientNet-B2 | TF-EfficientNet-B4 |
-| --- | --- | --- |
-| ![ERF DenseNet-201](results/OpenERF_densenet201.tv_in1k.png) | ![ERF EfficientNet-B2](results/OpenERF_efficientnet_b2.ra_in1k.png) | ![ERF TF-EfficientNet-B4](results/OpenERF_tf_efficientnet_b4.ns_jft_in1k.png) |
-| `densenet201.tv_in1k` | `efficientnet_b2.ra_in1k` | `tf_efficientnet_b4.ns_jft_in1k` |
-
-### ViT Families
-
-| ViT-B/16 | DeiT-B/16 | CaiT-S24 |
-| --- | --- | --- |
-| ![ERF ViT-B16](results/OpenERF_vit_base_patch16_224.augreg_in1k.png) | ![ERF DeiT-B16](results/OpenERF_deit_base_patch16_224.fb_in1k.png) | ![ERF CaiT-S24](results/OpenERF_cait_s24_224.fb_dist_in1k.png) |
-| `vit_base_patch16_224.augreg_in1k` | `deit_base_patch16_224.fb_in1k` | `cait_s24_224.fb_dist_in1k` |
-
-| XCiT-Medium | BEiT-B/16 (224) | BEiT-B/16 (384) |
-| --- | --- | --- |
-| ![ERF XCiT-Medium](results/OpenERF_xcit_medium_24_p16_224.fb_in1k.png) | ![ERF BEiT-B16-224](results/OpenERF_beit_base_patch16_224.in22k_ft_in22k_in1k.png) | ![ERF BEiT-B16-384](results/OpenERF_beit_base_patch16_384.in22k_ft_in22k_in1k.png) |
-| `xcit_medium_24_p16_224.fb_in1k` | `beit_base_patch16_224.in22k_ft_in22k_in1k` | `beit_base_patch16_384.in22k_ft_in22k_in1k` |
-
-### Swin Families
-
-| Swin-B | SwinV2-Small | SwinV2-Small-NS |
-| --- | --- | --- |
-| ![ERF Swin-B](results/OpenERF_swin_base_patch4_window7_224.ms_in1k.png) | ![ERF SwinV2-Small](results/OpenERF_swinv2_cr_small_224.sw_in1k.png) | ![ERF SwinV2-Small-NS](results/OpenERF_swinv2_cr_small_ns_224.sw_in1k.png) |
-| `swin_base_patch4_window7_224.ms_in1k` | `swinv2_cr_small_224.sw_in1k` | `swinv2_cr_small_ns_224.sw_in1k` |
+<table>
+  <tr>
+    <th align="center">ResNet-34</th>
+    <th align="center">ResNet-50</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="results/OpenERF_resnet34.a1_in1k.png" alt="ERF ResNet-34"></td>
+    <td align="center"><img src="results/OpenERF_resnet50.a1_in1k.png" alt="ERF ResNet-50"></td>
+  </tr>
+  <tr>
+    <td align="center"><code>resnet34.a1_in1k</code></td>
+    <td align="center"><code>resnet50.a1_in1k</code></td>
+  </tr>
+  <tr>
+    <th align="center">ResNeXt-101</th>
+    <th align="center">DenseNet-201</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="results/OpenERF_resnext101_32x8d.tv_in1k.png" alt="ERF ResNeXt-101"></td>
+    <td align="center"><img src="results/OpenERF_densenet201.tv_in1k.png" alt="ERF DenseNet-201"></td>
+  </tr>
+  <tr>
+    <td align="center"><code>resnext101_32x8d.tv_in1k</code></td>
+    <td align="center"><code>densenet201.tv_in1k</code></td>
+  </tr>
+  <tr>
+    <th align="center">ViT-B/16</th>
+    <th align="center">DeiT-B/16</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="results/OpenERF_vit_base_patch16_224.augreg_in1k.png" alt="ERF ViT-B16"></td>
+    <td align="center"><img src="results/OpenERF_deit_base_patch16_224.fb_in1k.png" alt="ERF DeiT-B16"></td>
+  </tr>
+  <tr>
+    <td align="center"><code>vit_base_patch16_224.augreg_in1k</code></td>
+    <td align="center"><code>deit_base_patch16_224.fb_in1k</code></td>
+  </tr>
+  <tr>
+    <th align="center">CaiT-S24</th>
+    <th align="center">XCiT-Medium</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="results/OpenERF_cait_s24_224.fb_dist_in1k.png" alt="ERF CaiT-S24"></td>
+    <td align="center"><img src="results/OpenERF_xcit_medium_24_p16_224.fb_in1k.png" alt="ERF XCiT-Medium"></td>
+  </tr>
+  <tr>
+    <td align="center"><code>cait_s24_224.fb_dist_in1k</code></td>
+    <td align="center"><code>xcit_medium_24_p16_224.fb_in1k</code></td>
+  </tr>
+  <tr>
+    <th align="center">BEiT-B/16 (224)</th>
+    <th align="center">SwinV2-Small</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="results/OpenERF_beit_base_patch16_224.in22k_ft_in22k_in1k.png" alt="ERF BEiT-B16-224"></td>
+    <td align="center"><img src="results/OpenERF_swinv2_cr_small_224.sw_in1k.png" alt="ERF SwinV2-Small"></td>
+  </tr>
+  <tr>
+    <td align="center"><code>beit_base_patch16_224.in22k_ft_in22k_in1k</code></td>
+    <td align="center"><code>swinv2_cr_small_224.sw_in1k</code></td>
+  </tr>
+</table>
 
 ---
 
