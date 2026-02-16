@@ -1,0 +1,17 @@
+graft src
+include README.md
+include LICENSE
+include pyproject.toml
+
+prune tests
+prune examples
+prune reference
+prune results
+prune results_npy
+prune results_metrics
+prune results_debug
+prune OpenERF.egg-info
+
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude .DS_Store

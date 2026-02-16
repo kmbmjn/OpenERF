@@ -1,17 +1,19 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "OpenERF"
+name = "openerf"
 version = "0.6.1"
-description = "One-line Effective Receptive Field extraction for pretrained timm models"
+description = "One-line Effective Receptive Field (ERF) extraction for pretrained timm vision models."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [
+    { name = "Bum Jun Kim" },
     { name = "OpenERF Contributors" },
 ]
+keywords = ["ERF", "interpretability", "timm", "pytorch", "computer-vision"]
 dependencies = [
     "torch>=2.2",
     "torchvision>=0.17",
@@ -23,10 +25,38 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+gaussian = [
+    "lmfit>=1.3",
+    "scipy>=1.10",
+]
 fit = [
     "lmfit>=1.3",
     "scipy>=1.10",
 ]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "build>=1.2",
+    "twine>=5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/kmbmjn/OpenERF"
+Repository = "https://github.com/kmbmjn/OpenERF"
+
+[project.scripts]
+openerf = "openerf.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["OpenERF"]
 
 [tool.setuptools.packages.find]
-include = ["OpenERF*"]
+where = ["src"]
+include = ["openerf*"]
+
+[tool.setuptools.package-data]
+openerf = ["py.typed"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

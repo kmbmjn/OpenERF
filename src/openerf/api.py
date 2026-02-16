@@ -10,7 +10,7 @@ import numpy as np
 import torch
 from torch.nn import Module
 
-from .erf import ERFResult, compute_erf
+from .erf import ERFResult, compute_erf as _compute_erf
 from .metrics import compute_erf_metrics, save_metrics_json
 from .model_zoo import get_model_family, infer_target_layer
 from .visualization import save_erf_png
@@ -39,7 +39,7 @@ def _resolve_artifact_path(base_name: str, suffix: str, artifact_dir: str | Path
     return directory / (base_name + suffix)
 
 
-def compute_ERF(
+def compute_erf(
     model: Module,
     model_name: str | None = None,
     image_dir: str | Path = "./imagenet_val_1000",
@@ -52,7 +52,7 @@ def compute_ERF(
 ) -> ERFResult:
     """Compute ERF map for timm models."""
     resolved_target_layer = infer_target_layer(model_name=model_name, target_layer=target_layer)
-    return compute_erf(
+    return _compute_erf(
         model=model,
         image_dir=image_dir,
         max_images=max_images,
@@ -64,7 +64,7 @@ def compute_ERF(
     )
 
 
-def save_ERF(
+def save_erf(
     model: Module,
     model_name: str = "model",
     source_model_name: str | None = None,
@@ -94,7 +94,7 @@ def save_ERF(
     """
     resolved_source_model_name = source_model_name or model_name
 
-    result = compute_ERF(
+    result = compute_erf(
         model=model,
         model_name=resolved_source_model_name,
         image_dir=image_dir,
@@ -141,3 +141,69 @@ def save_ERF(
         payload["metrics_path"] = str(metrics_path)
 
     return payload
+
+
+def compute_ERF(
+    model: Module,
+    model_name: str | None = None,
+    image_dir: str | Path = "./imagenet_val_1000",
+    max_images: int | None = None,
+    target_layer: str | None = None,
+    device: str | torch.device | None = None,
+    num_workers: int = 0,
+    show_progress: bool = True,
+    fit_gaussian: bool = False,
+) -> ERFResult:
+    """Backward-compatible alias for ``compute_erf``."""
+    return compute_erf(
+        model=model,
+        model_name=model_name,
+        image_dir=image_dir,
+        max_images=max_images,
+        target_layer=target_layer,
+        device=device,
+        num_workers=num_workers,
+        show_progress=show_progress,
+        fit_gaussian=fit_gaussian,
+    )
+
+
+def save_ERF(
+    model: Module,
+    model_name: str = "model",
+    source_model_name: str | None = None,
+    image_dir: str | Path = "./imagenet_val_1000",
+    save_dir: str | Path | None = None,
+    npy_dir: str | Path | None = None,
+    metrics_dir: str | Path | None = None,
+    max_images: int | None = None,
+    target_layer: str | None = None,
+    device: str | torch.device | None = None,
+    num_workers: int = 0,
+    show_progress: bool = True,
+    fit_gaussian: bool = False,
+    colormap: str = "plasma",
+    save_numpy: bool = False,
+    save_metrics: bool = False,
+    metrics_radii: tuple[int, ...] = (5, 10, 20, 30, 40, 60, 80),
+) -> dict[str, Any]:
+    """Backward-compatible alias for ``save_erf``."""
+    return save_erf(
+        model=model,
+        model_name=model_name,
+        source_model_name=source_model_name,
+        image_dir=image_dir,
+        save_dir=save_dir,
+        npy_dir=npy_dir,
+        metrics_dir=metrics_dir,
+        max_images=max_images,
+        target_layer=target_layer,
+        device=device,
+        num_workers=num_workers,
+        show_progress=show_progress,
+        fit_gaussian=fit_gaussian,
+        colormap=colormap,
+        save_numpy=save_numpy,
+        save_metrics=save_metrics,
+        metrics_radii=metrics_radii,
+    )

@@ -1,7 +1,7 @@
 # OpenERF
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![timm](https://img.shields.io/badge/Built%20on-timm-orange.svg)](https://github.com/huggingface/pytorch-image-models)
 
 > One-line **Effective Receptive Field (ERF)** extraction for pretrained `timm` vision models.
@@ -9,14 +9,20 @@
 ERF visualizes how input pixels contribute to model responses — useful for interpretability and trustworthy AI workflows.
 
 ```python
-import OpenERF
+import openerf
 import timm
 
 model_name = "resnet50.a1_in1k"
 model = timm.create_model(model_name, pretrained=True)
 
-OpenERF.save_ERF(model, model_name=model_name)
+openerf.save_erf(model, model_name=model_name)
 # -> ./results/OpenERF_resnet50.a1_in1k.png
+```
+
+Legacy top-level import is still available: `import OpenERF`.
+
+```python
+from openerf import compute_erf, save_erf
 ```
 
 ---
@@ -94,10 +100,12 @@ The full set is available in [`./results/`](./results/).
 ## Table of Contents
 
 - [Features](#features)
+- [Repository Layout](#repository-layout)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Options](#cli-options)
 - [Output Structure](#output-structure)
+- [Distribution Package](#distribution-package)
 - [API Reference](#api-reference)
 - [Supported Models](#supported-models)
 - [Dataset](#dataset)
@@ -108,11 +116,38 @@ The full set is available in [`./results/`](./results/).
 
 ## Features
 
-- **One-line API** — `OpenERF.save_ERF` for end-to-end ERF extraction
+- **One-line API** — `openerf.save_erf` for end-to-end ERF extraction
 - **Automatic preprocessing** — `mean/std`, interpolation, `crop_pct`, input size via `timm`
 - **Unified workflow** — CNN and Transformer families with the same interface
 - **Publication-ready output** — colored ERF maps (`plasma` colormap by default)
 - **Optional exports** — Gaussian fitting (`lmfit`), `.npy` arrays, `.json` metrics
+
+## Repository Layout
+
+```text
+OpenERF/
+  src/
+    openerf/
+      __init__.py
+      api.py
+      cli.py
+      data.py
+      erf.py
+      feature_ops.py
+      fit.py
+      metrics.py
+      model_zoo.py
+      visualization.py
+      py.typed
+  tests/
+    test_smoke.py
+  examples/
+    example.py
+  README.md
+  LICENSE
+  pyproject.toml
+  requirements.txt
+```
 
 ## Installation
 
@@ -120,6 +155,8 @@ The full set is available in [`./results/`](./results/).
 conda activate OpenERF
 pip install -r requirements.txt
 pip install -e .
+# optional gaussian fit extras
+pip install -e ".[gaussian]"
 ```
 
 ## Quick Start
@@ -127,13 +164,13 @@ pip install -e .
 ### Python API — single model
 
 ```python
-import OpenERF
+import openerf
 import timm
 
 model_name = "resnet50.a1_in1k"
 model = timm.create_model(model_name, pretrained=True)
 
-result = OpenERF.save_ERF(
+result = openerf.save_erf(
     model=model,
     model_name=model_name,
     image_dir="./imagenet_val_1000",
@@ -151,24 +188,33 @@ print(result.get("metrics_path"))
 ### CLI — batch run (preset models)
 
 ```bash
-python example.py --image-dir ./imagenet_val_1000 --max-images 1000
+openerf --help
+```
+
+```bash
+openerf --image-dir ./imagenet_val_1000 --max-images 1000
 ```
 
 ```bash
 # show all preset models
-python example.py --list-models
+openerf --list-models
 
 # resume long runs
-python example.py --image-dir ./imagenet_val_1000 --max-images 1000 --skip-existing
+openerf --image-dir ./imagenet_val_1000 --max-images 1000 --skip-existing
 
 # run selected families only
-python example.py --families vit deit cait xcit beit swin swinv2 \
+openerf --families vit deit cait xcit beit swin swinv2 \
     --image-dir ./imagenet_val_1000 --max-images 1000
+```
+
+```bash
+# module form is also supported
+python -m openerf.cli --list-models
 ```
 
 ## CLI Options
 
-`example.py` supports the following options:
+`openerf` (or `python -m openerf.cli`) supports the following options:
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -195,9 +241,16 @@ python example.py --families vit deit cait xcit beit swin swinv2 \
 ./results_debug/          (smoke/check/intermediate artifacts)
 ```
 
+## Distribution Package
+
+Source distributions are configured to include package source and core metadata while excluding large experiment artifacts.
+
+- Included: `src/`, `README.md`, `LICENSE`, `pyproject.toml`
+- Excluded: `results*/`, `reference/`, `examples/`, `tests/`, `OpenERF.egg-info/`
+
 ## API Reference
 
-### `OpenERF.compute_ERF(...)`
+### `openerf.compute_erf(...)`
 
 Computes ERF in memory. Returns `ERFResult`:
 
@@ -209,7 +262,7 @@ Computes ERF in memory. Returns `ERFResult`:
 | `resolved_target_layer` | Actual target layer name |
 | `gaussian_fit` | *(optional)* Gaussian fit parameters |
 
-### `OpenERF.save_ERF(...)`
+### `openerf.save_erf(...)`
 
 Computes ERF, saves PNG, and optionally exports `.npy` / `.json`.
 

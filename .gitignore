@@ -1,0 +1,28 @@
+# OS metadata
+.DS_Store
+
+# Python cache and tooling
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+.env
+
+# Packaging artifacts
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Local run artifacts
+results/
+results_npy/
+results_metrics/
+results_debug/

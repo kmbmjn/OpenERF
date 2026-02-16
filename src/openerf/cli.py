@@ -1,4 +1,4 @@
-"""OpenERF example: run ERF extraction on preset timm model families."""
+"""CLI: run ERF extraction on preset timm model families."""
 
 from __future__ import annotations
 
@@ -10,16 +10,19 @@ from typing import Iterable
 import timm
 import torch
 
-import OpenERF
-from OpenERF.data import list_image_paths
-from OpenERF.model_zoo import ORDERED_FAMILIES, SUPPORTED_MODEL_GROUPS
+import openerf
+from openerf.data import list_image_paths
+from openerf.model_zoo import ORDERED_FAMILIES, SUPPORTED_MODEL_GROUPS
 
 
 DEFAULT_FAMILIES = ORDERED_FAMILIES
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        prog="openerf",
+        description="Extract Effective Receptive Fields (ERF) for pretrained timm models.",
+    )
     parser.add_argument(
         "--families",
         type=str,
@@ -191,7 +194,7 @@ def run_models(
         model = None
         try:
             model = timm.create_model(model_name, pretrained=True)
-            result = OpenERF.save_ERF(
+            result = openerf.save_erf(
                 model=model,
                 model_name=output_model_name,
                 source_model_name=model_name,
