@@ -4,9 +4,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![timm](https://img.shields.io/badge/Built%20on-timm-orange.svg)](https://github.com/huggingface/pytorch-image-models)
 
-> One-line **Effective Receptive Field (ERF)** extraction for pretrained `timm` vision models.
-
-ERF visualizes how input pixels contribute to model responses — useful for interpretability and trustworthy AI workflows.
+One-line **Effective Receptive Field (ERF)** extraction for pretrained `timm` vision models.
 
 ```python
 import openerf
@@ -14,22 +12,13 @@ import timm
 
 model_name = "resnet50.a1_in1k"
 model = timm.create_model(model_name, pretrained=True)
-
 openerf.save_erf(model, model_name=model_name)
 # -> ./results/OpenERF_resnet50.a1_in1k.png
 ```
 
-Legacy top-level import is still available: `import OpenERF`.
-
-```python
-from openerf import compute_erf, save_erf
-```
-
----
-
 ## Visual Gallery
 
-All images below are ERF maps generated from the ImageNet validation subset in `./imagenet_val_1000`.
+All images below are ERF maps generated from the ImageNet validation subset (`./imagenet_val_1000/`).
 The full set is available in [`./results/`](./results/).
 
 <table>
@@ -62,8 +51,8 @@ The full set is available in [`./results/`](./results/).
     <th align="center">DeiT-B/16</th>
   </tr>
   <tr>
-    <td align="center"><img src="results/OpenERF_vit_base_patch16_224.augreg_in1k.png" alt="ERF ViT-B16"></td>
-    <td align="center"><img src="results/OpenERF_deit_base_patch16_224.fb_in1k.png" alt="ERF DeiT-B16"></td>
+    <td align="center"><img src="results/OpenERF_vit_base_patch16_224.augreg_in1k.png" alt="ERF ViT-B/16"></td>
+    <td align="center"><img src="results/OpenERF_deit_base_patch16_224.fb_in1k.png" alt="ERF DeiT-B/16"></td>
   </tr>
   <tr>
     <td align="center"><code>vit_base_patch16_224.augreg_in1k</code></td>
@@ -86,7 +75,7 @@ The full set is available in [`./results/`](./results/).
     <th align="center">SwinV2-Small</th>
   </tr>
   <tr>
-    <td align="center"><img src="results/OpenERF_beit_base_patch16_224.in22k_ft_in22k_in1k.png" alt="ERF BEiT-B16-224"></td>
+    <td align="center"><img src="results/OpenERF_beit_base_patch16_224.in22k_ft_in22k_in1k.png" alt="ERF BEiT-B/16 (224)"></td>
     <td align="center"><img src="results/OpenERF_swinv2_cr_small_224.sw_in1k.png" alt="ERF SwinV2-Small"></td>
   </tr>
   <tr>
@@ -95,73 +84,48 @@ The full set is available in [`./results/`](./results/).
   </tr>
 </table>
 
----
-
 ## Table of Contents
 
 - [Features](#features)
-- [Repository Layout](#repository-layout)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Options](#cli-options)
-- [Output Structure](#output-structure)
-- [Distribution Package](#distribution-package)
 - [API Reference](#api-reference)
 - [Supported Models](#supported-models)
 - [Dataset](#dataset)
+- [Repository Layout](#repository-layout)
+- [Output Structure](#output-structure)
+- [Distribution Package](#distribution-package)
 - [Citing](#citing)
 - [License](#license)
 
----
-
 ## Features
 
-- **One-line API** — `openerf.save_erf` for end-to-end ERF extraction
-- **Automatic preprocessing** — `mean/std`, interpolation, `crop_pct`, input size via `timm`
-- **Unified workflow** — CNN and Transformer families with the same interface
-- **Publication-ready output** — colored ERF maps (`plasma` colormap by default)
-- **Optional exports** — Gaussian fitting (`lmfit`), `.npy` arrays, `.json` metrics
-
-## Repository Layout
-
-```text
-OpenERF/
-  src/
-    openerf/
-      __init__.py
-      api.py
-      cli.py
-      data.py
-      erf.py
-      feature_ops.py
-      fit.py
-      metrics.py
-      model_zoo.py
-      visualization.py
-      py.typed
-  tests/
-    test_smoke.py
-  examples/
-    example.py
-  README.md
-  LICENSE
-  pyproject.toml
-  requirements.txt
-```
+- **One-line API** &mdash; `openerf.save_erf` for end-to-end ERF extraction
+- **Automatic preprocessing** &mdash; `mean/std`, interpolation, `crop_pct`, input size from `timm` data config
+- **Unified workflow** &mdash; CNN and Transformer families through the same interface
+- **Publication-ready output** &mdash; ERF heatmaps (`plasma` by default)
+- **Optional exports** &mdash; Gaussian fitting (`lmfit`), `.npy` arrays, `.json` metrics
 
 ## Installation
+
+```bash
+pip install openerf
+```
+
+Or install from source:
 
 ```bash
 conda activate OpenERF
 pip install -r requirements.txt
 pip install -e .
-# optional gaussian fit extras
+# Optional: Gaussian fitting extras
 pip install -e ".[gaussian]"
 ```
 
 ## Quick Start
 
-### Python API — single model
+### Python API
 
 ```python
 import openerf
@@ -185,36 +149,39 @@ print(result.get("npy_path"))
 print(result.get("metrics_path"))
 ```
 
-### CLI — batch run (preset models)
+Legacy top-level import is still supported: `import OpenERF`.
+
+```python
+from openerf import compute_erf, save_erf
+```
+
+### CLI
 
 ```bash
 openerf --help
-```
-
-```bash
 openerf --image-dir ./imagenet_val_1000 --max-images 1000
 ```
 
 ```bash
-# show all preset models
+# Show all preset models
 openerf --list-models
 
-# resume long runs
+# Resume long runs
 openerf --image-dir ./imagenet_val_1000 --max-images 1000 --skip-existing
 
-# run selected families only
+# Run selected families
 openerf --families vit deit cait xcit beit swin swinv2 \
     --image-dir ./imagenet_val_1000 --max-images 1000
 ```
 
 ```bash
-# module form is also supported
+# Module form
 python -m openerf.cli --list-models
 ```
 
 ## CLI Options
 
-`openerf` (or `python -m openerf.cli`) supports the following options:
+`openerf` (or `python -m openerf.cli`) supports:
 
 | Option | Description | Default |
 | --- | --- | --- |
@@ -232,27 +199,11 @@ python -m openerf.cli --list-models
 | `--no-save-metrics` | Disable `.json` export | enabled |
 | `--stop-on-error` | Stop immediately on model failure | disabled |
 
-## Output Structure
-
-```
-./results/                OpenERF_<model_name>.png          # ERF heatmap
-./results_npy/            OpenERF_<model_name>.npy          # ERF array
-./results_metrics/        OpenERF_<model_name>_metrics.json # ERF metrics
-./results_debug/          (smoke/check/intermediate artifacts)
-```
-
-## Distribution Package
-
-Source distributions are configured to include package source and core metadata while excluding large experiment artifacts.
-
-- Included: `src/`, `README.md`, `LICENSE`, `pyproject.toml`
-- Excluded: `results*/`, `reference/`, `examples/`, `tests/`, `OpenERF.egg-info/`
-
 ## API Reference
 
 ### `openerf.compute_erf(...)`
 
-Computes ERF in memory. Returns `ERFResult`:
+Computes ERF in memory and returns `ERFResult`:
 
 | Field | Description |
 | --- | --- |
@@ -266,7 +217,7 @@ Computes ERF in memory. Returns `ERFResult`:
 
 Computes ERF, saves PNG, and optionally exports `.npy` / `.json`.
 
-**Defaults:** `save_numpy=False`, `save_metrics=False`, `colormap="plasma"`
+Default values: `save_numpy=False`, `save_metrics=False`, `colormap="plasma"`
 
 | Return key | Description |
 | --- | --- |
@@ -307,6 +258,49 @@ OpenERF uses the ImageNet validation set (or a subset).
 - Image folder: `./imagenet_val_1000/`
 - Default scope: `--image-dir ./imagenet_val_1000 --max-images 1000`
 
+## Repository Layout
+
+```text
+OpenERF/
+  src/
+    openerf/
+      __init__.py
+      api.py
+      cli.py
+      data.py
+      erf.py
+      feature_ops.py
+      fit.py
+      metrics.py
+      model_zoo.py
+      visualization.py
+      py.typed
+  tests/
+    test_smoke.py
+  examples/
+    example.py
+  README.md
+  LICENSE
+  pyproject.toml
+  requirements.txt
+```
+
+## Output Structure
+
+```text
+./results/         OpenERF_<model_name>.png          # ERF heatmap
+./results_npy/     OpenERF_<model_name>.npy          # ERF array
+./results_metrics/ OpenERF_<model_name>_metrics.json # ERF metrics
+./results_debug/   (smoke/check/intermediate artifacts)
+```
+
+## Distribution Package
+
+Source distributions include package source and core metadata while excluding large experiment artifacts.
+
+- **Included:** `src/`, `README.md`, `LICENSE`, `pyproject.toml`
+- **Excluded:** `results*/`, `reference/`, `examples/`, `tests/`, `OpenERF.egg-info/`
+
 ## Citing
 
 If OpenERF is useful in your research, please cite:
@@ -324,9 +318,7 @@ If OpenERF is useful in your research, please cite:
   publisher    = {{BMVA} Press},
   year         = {2023}
 }
-```
 
-```bibtex
 @article{KimCJLJK23,
   author       = {Bum Jun Kim and
                   Hyeyeon Choi and
